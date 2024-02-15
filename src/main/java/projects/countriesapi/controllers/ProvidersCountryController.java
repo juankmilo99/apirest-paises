@@ -29,9 +29,21 @@ public class ProvidersCountryController {
         return response;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<ProvidersCountryResponseRest> buscarPorCode(@RequestParam String code){
-        ResponseEntity<ProvidersCountryResponseRest> response = providersCountryService.buscarProvidersCountryPorCode(code);
+    @GetMapping("/{field}")
+    public ResponseEntity<ProvidersCountryResponseRest> buscarSort(@PathVariable String field){
+        ResponseEntity<ProvidersCountryResponseRest> response = providersCountryService.buscarSortProvidersCountry(field);
+        return response;
+    }
+
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    public ResponseEntity<ProvidersCountryResponseRest> pagination(@PathVariable int offset, @PathVariable int pageSize){
+        ResponseEntity<ProvidersCountryResponseRest> response = providersCountryService.paginationProvidersCountry(offset, pageSize);
+        return response;
+    }
+
+    @GetMapping("/paginationAndSort/{offset}/{pageSize}/{field}")
+    public ResponseEntity<ProvidersCountryResponseRest> paginationAndSorting(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String field){
+        ResponseEntity<ProvidersCountryResponseRest> response = providersCountryService.paginationAndSortingProvidersCountry(offset, pageSize, field);
         return response;
     }
 }

@@ -3,6 +3,8 @@ package projects.countriesapi.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,77 @@ public class ProvidersCountryServiceImpl implements ProvidersCountryService {
         }
         return new ResponseEntity<ProvidersCountryResponseRest>(response, HttpStatus.OK); //devuelve 200
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<ProvidersCountryResponseRest> buscarSortProvidersCountry(String field) {
+
+        ProvidersCountryResponseRest response = new ProvidersCountryResponseRest();
+
+        try {
+            log.info("field: " + field);
+            List<ProvidersCountry> providers = providersCountryRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+            response.getProvidersCountryResponse().setProvidersCountries(providers);
+
+            response.setMetadata("Respuesta ok", "200", "Respuesta exitosa");
+        } catch (Exception e) {
+
+            response.setMetadata("Respuesta nok", "-1", "Error al consultar providers");
+            log.error("error al consultar providers: ", e.getMessage());
+            e.getStackTrace();
+            throw e;
+
+        }
+        return new ResponseEntity<ProvidersCountryResponseRest>(response, HttpStatus.OK); //devuelve 200
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<ProvidersCountryResponseRest> paginationProvidersCountry(int offset, int pageSize) {
+
+        ProvidersCountryResponseRest response = new ProvidersCountryResponseRest();
+
+        try {
+
+            List<ProvidersCountry> providers = providersCountryRepository.findAll(PageRequest.of(offset, pageSize)).getContent();
+            response.getProvidersCountryResponse().setProvidersCountries(providers);
+
+            response.setMetadata("Respuesta ok", "200", "Respuesta exitosa");
+        } catch (Exception e) {
+
+            response.setMetadata("Respuesta nok", "-1", "Error al consultar providers");
+            log.error("error al consultar providers: ", e.getMessage());
+            e.getStackTrace();
+            throw e;
+
+        }
+        return new ResponseEntity<ProvidersCountryResponseRest>(response, HttpStatus.OK); //devuelve 200
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<ProvidersCountryResponseRest> paginationAndSortingProvidersCountry(int offset, int pageSize, String field) {
+
+        ProvidersCountryResponseRest response = new ProvidersCountryResponseRest();
+
+        try {
+
+            List<ProvidersCountry> providers = providersCountryRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field))).getContent();
+            response.getProvidersCountryResponse().setProvidersCountries(providers);
+
+            response.setMetadata("Respuesta ok", "200", "Respuesta exitosa");
+        } catch (Exception e) {
+
+            response.setMetadata("Respuesta nok", "-1", "Error al consultar providers");
+            log.error("error al consultar providers: ", e.getMessage());
+            e.getStackTrace();
+            throw e;
+
+        }
+        return new ResponseEntity<ProvidersCountryResponseRest>(response, HttpStatus.OK); //devuelve 200
+    }
+
+
+
 
 
     @Override
